@@ -1,3 +1,6 @@
+// Clock multiplier
+// By Simon Juhl
+// www.simonjuhl.net
 int pulseState = LOW;
 float clockSpeed = 0;
 const int pulseLength = 8000; // 8ms
