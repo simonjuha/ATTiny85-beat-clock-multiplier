@@ -1,6 +1,7 @@
 // Clock multiplier
 // By Simon Juhl
 // www.simonjuhl.net
+// Circuit Diagram: www.github.com/simonjuha/ATTiny85-beat-clock-multiplier/blob/master/diagram.png
 int pulseState = LOW;
 float clockSpeed = 0;
 const int pulseLength = 8000; // 8ms
@@ -15,9 +16,9 @@ unsigned long time;
 void setup() {
   pinMode(out, OUTPUT); // clock ouput
   pinMode(in, INPUT); // clock input
-  pinMode(4, INPUT); // switch to 5v
-  pinMode(1, INPUT); // switch to 5v
-  pinMode(0, INPUT); // switch to 5v
+  pinMode(4, INPUT); // switch to 5v (clock x2)
+  pinMode(1, INPUT); // switch to 5v (clock x3)
+  pinMode(0, INPUT); // switch to 5v (clock x4)
 }
 
 void loop() {
