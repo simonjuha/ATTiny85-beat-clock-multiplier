@@ -1,3 +1,7 @@
+/*
+    SEE NEWER VERSION (MAIN.CPP) FOR NON-ARDUINO IMPLEMENTATION
+*/
+
 // Clock multiplier
 // By Simon Juhl
 // www.simonjuhl.net
