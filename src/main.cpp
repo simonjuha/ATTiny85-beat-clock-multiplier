@@ -19,6 +19,7 @@
 #define __AVR_ATtiny13a__ // use __AVR_ATtiny85__ for ATtiny85 (untested)
 
 #if defined(__AVR_ATtiny13a__)
+    // remeber to set fuses: lfuse: 0x7a, hfuse: 0xff when using ATtiny13a
     #define ISR_VECTOR TIM0_COMPA_vect
     #define F_CPU 9600000UL  // 9.6 MHz
 #elif defined(__AVR_ATtiny85__)
