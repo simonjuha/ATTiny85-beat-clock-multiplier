@@ -66,57 +66,44 @@ void init_beat_clock_multiplier(){
 }
 
 void tick_beat_clock_multiplier() {
-    static uint8_t last_clock_in_state = false;
+    static bool last_clock_in_state = false;
     static uint32_t last_rise_time = 0;
     static uint32_t last_pulse_time = 0;
-    static uint32_t pulse_interval = 0; // Now it's a variable
+    static uint32_t pulse_interval = 0;
     static uint8_t pulse_length = 8;
 
     uint8_t multiplier = 1;
 
-    bool M2 = PINB & (1 << CLOCK_MULTIPLIER_2_PIN);
-    bool M3 = PINB & (1 << CLOCK_MULTIPLIER_3_PIN);
-    bool M4 = PINB & (1 << CLOCK_MULTIPLIER_4_PIN);
-    
-    if(M2){
-        multiplier *= 2;
-    }
-    if(M3){
-        multiplier *= 3;
-    }
-    if(M4){
-        multiplier *= 4;
-    }
+    // Read the state of the multiplier pins and calculate the multiplier
+    multiplier *= (PINB & (1 << CLOCK_MULTIPLIER_2_PIN)) ? 2 : 1;
+    multiplier *= (PINB & (1 << CLOCK_MULTIPLIER_3_PIN)) ? 3 : 1;
+    multiplier *= (PINB & (1 << CLOCK_MULTIPLIER_4_PIN)) ? 4 : 1;
 
     // Read the state of the clock input pin
-    uint8_t clock_in_state = PINB & (1 << CLOCK_IN_PIN);
+    bool clock_in_state = PINB & (1 << CLOCK_IN_PIN);
 
-    // If the state is HIGH and if last state was LOW
-    if (clock_in_state && last_clock_in_state == false) {
+    // Handle rising edge of clock input
+    if (clock_in_state && !last_clock_in_state) {
         if (last_pulse_time > 0) {
-            // Calculate the interval between the last two pulses and divide it by the multiplier
             pulse_interval = (millis() - last_pulse_time) / multiplier;
         }
         last_pulse_time = millis();
         last_rise_time = millis();
-
-        PORTB |= (1 << CLOCK_OUT_PIN);
+        PORTB |= (1 << CLOCK_OUT_PIN); // Set clock out pin high
     }
 
-    // output clock pulse
+    // Handle clock pulse
     if ((millis() - last_rise_time) >= pulse_interval) {
-        // set high
-        PORTB |= (1 << CLOCK_OUT_PIN);
+        PORTB |= (1 << CLOCK_OUT_PIN); // Set clock out pin high
         last_rise_time = millis();
     }
 
-    // set low after pulse length
+    // Handle pulse length
     if ((millis() - last_rise_time) >= pulse_length) {
-        // set low
-        PORTB &= ~(1 << CLOCK_OUT_PIN);
+        PORTB &= ~(1 << CLOCK_OUT_PIN); // Set clock out pin low
     }
 
-    // Save the current state as last state, for next iteration
+    // Save the current state as last state for the next iteration
     last_clock_in_state = clock_in_state;
 }
 
