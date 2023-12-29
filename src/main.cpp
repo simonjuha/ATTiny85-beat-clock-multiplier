@@ -18,16 +18,17 @@
 #include <avr/interrupt.h>
 #define __AVR_ATtiny13a__ // use __AVR_ATtiny85__ for ATtiny85 (untested)
 
-#define F_CPU 9600000UL  // 9.6 MHz, ATtiny85 runs either 16MHz or 8MHz
-// 9.6 MHz / (8 * (1 + 57)) = 20.7 kHz
-#define INTERRUPT_RATE 20000 // 20 kHz (20kHz seem to work more precise)
-#define MS_TIMER_TICKS INTERRUPT_RATE / 1000
-
 #if defined(__AVR_ATtiny13a__)
     #define ISR_VECTOR TIM0_COMPA_vect
+    #define F_CPU 9600000UL  // 9.6 MHz
 #elif defined(__AVR_ATtiny85__)
     #define ISR_VECTOR TIMER0_COMPA_vect
+    #define F_CPU 800000UL  // 8MHz or 16MHz
 #endif
+
+// Interrupt rate formula: (F_CPU) / (prescale * (1 + OCR0A))
+#define INTERRUPT_RATE 20000 // 20 kHz
+#define MS_TIMER_TICKS INTERRUPT_RATE / 1000
 
 #define CLOCK_MULTIPLIER_4_PIN  PB0
 #define CLOCK_MULTIPLIER_3_PIN  PB1
